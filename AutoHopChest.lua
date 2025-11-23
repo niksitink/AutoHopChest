@@ -1,4 +1,3 @@
-setfpscap(20)
 -- AutoHopChest.lua
 -- Auto Chest + Auto Server Hop cho Blox Fruits
 
