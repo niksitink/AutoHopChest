@@ -1,32 +1,39 @@
 setfpscap(10)
--- AutoHopChest.lua
--- Auto Chest + Auto Server Hop cho Blox Fruits
 
 repeat task.wait() until game:IsLoaded() and game.Players.LocalPlayer
 local player = game.Players.LocalPlayer
 
--- Team cho script chest (có thể override bằng getgenv().Team trước khi load)
+-- Team cho script chest
 getgenv().Team = getgenv().Team or "Marines"
 
--- Chạy auto chest
+-- Auto chest
 pcall(function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/trongdeptraihucscript/Main/refs/heads/main/TN-Tp-Chest.lua"))()
 end)
 
 -- =============================
--- AUTO SERVER HOP SAU X GIÂY
+-- AUTO SERVER HOP V2 - Không lỗi 773
 -- =============================
 
+local HttpService = game:GetService("HttpService")
 local TeleportService = game:GetService("TeleportService")
-local PLACE_ID = game.PlaceId
+local placeId = game.PlaceId
+local hop_delay = tonumber(getgenv().HopDelay) or 95
 
--- Nếu đã set getgenv().HopDelay trước đó thì dùng, không thì mặc định 95s
-local HOP_INTERVAL = tonumber(getgenv().HopDelay) or 95
+local function ServerHop()
+    local url = "https://games.roblox.com/v1/games/"..placeId.."/servers/Public?sortOrder=Asc&limit=100"
+    local data = HttpService:JSONDecode(game:HttpGet(url))
+
+    for _, server in pairs(data.data) do
+        if server.playing < server.maxPlayers then
+            TeleportService:TeleportToPlaceInstance(placeId, server.id, player)
+            return
+        end
+    end
+end
 
 task.spawn(function()
-    while task.wait(HOP_INTERVAL) do
-        pcall(function()
-            TeleportService:Teleport(PLACE_ID, player)
-        end)
+    while task.wait(hop_delay) do
+        ServerHop()
     end
 end)
