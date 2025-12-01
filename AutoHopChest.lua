@@ -1,7 +1,7 @@
 -- AutoHopChest V6 - Multi-Acc + Wave Friendly
 
 -- FPS: để quá thấp dễ bị 267, giữ 20–30 là hợp lý
-setfpscap(getgenv().FPS or 25)
+setfpscap(getgenv().FPS or 20)
 
 repeat task.wait() until game:IsLoaded()
 local Players = game:GetService("Players")
